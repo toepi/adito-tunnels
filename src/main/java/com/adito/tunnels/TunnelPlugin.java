@@ -1,5 +1,4 @@
-
-				/*
+/*
  *  Adito
  *
  *  Copyright (C) 2003-2006 3SP LTD. All Rights Reserved
@@ -17,7 +16,6 @@
  *  License along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-			
 package com.adito.tunnels;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,7 +67,7 @@ public class TunnelPlugin extends DefaultPlugin {
     /**
      * Extension bundle ID
      */
-    public static final String BUNDLE_ID = "adito-community-tunnels";
+    public static final String BUNDLE_ID = "adito-tunnels";
 
     final static Log log = LogFactory.getLog(TunnelPlugin.class);
 
@@ -82,7 +80,7 @@ public class TunnelPlugin extends DefaultPlugin {
      * Constructor.
      */
     public TunnelPlugin() {
-        super("/WEB-INF/adito-community-tunnels-tiles-defs.xml", true);
+        super("/WEB-INF/adito-tunnels-tiles-defs.xml", true);
     }
 
     /* (non-Javadoc)
@@ -103,7 +101,7 @@ public class TunnelPlugin extends DefaultPlugin {
         }
     }
 
-	void initDatabase() throws Exception {
+    void initDatabase() throws Exception {
         TunnelDatabaseFactory.getInstance().open(CoreServlet.getServlet(), this.getPluginDefinition());
     }
 
@@ -127,7 +125,7 @@ public class TunnelPlugin extends DefaultPlugin {
         tree.addMenuItem("tunnel", new RemoveResourceAction(SessionInfo.ALL_CONTEXTS, MESSAGE_RESOURCES_KEY));
         tree.addMenuItem("tunnel", new EditResourceAction(SessionInfo.ALL_CONTEXTS, MESSAGE_RESOURCES_KEY));
         //tree.addMenuItem("tunnel", new SwitchOnAction());
-		tree.addMenuItem("tunnel", new CloneResourceAction(SessionInfo.MANAGEMENT_CONSOLE_CONTEXT, MESSAGE_RESOURCES_KEY));
+        tree.addMenuItem("tunnel", new CloneResourceAction(SessionInfo.MANAGEMENT_CONSOLE_CONTEXT, MESSAGE_RESOURCES_KEY));
         tree.addMenuItem("tunnel", new SwitchOffAction());
     }
 
@@ -135,42 +133,42 @@ public class TunnelPlugin extends DefaultPlugin {
         MenuTree tree = NavigationManager.getMenuTree(CoreMenuTree.MENU_ITEM_MENU_TREE);
 
         tree.addMenuItem("resources", new MenuItem("userTunnels",
-                        MESSAGE_RESOURCES_KEY,
-                        "/showUserTunnels.do",
-                        500,
-                        true,
-                        null,
-                        SessionInfo.USER_CONSOLE_CONTEXT,
-                        SSL_TUNNEL_RESOURCE_TYPE,
-                        new Permission[] { PolicyConstants.PERM_PERSONAL_CREATE_EDIT_AND_DELETE },
-                        SSL_TUNNEL_RESOURCE_TYPE));
+                MESSAGE_RESOURCES_KEY,
+                "/showUserTunnels.do",
+                500,
+                true,
+                null,
+                SessionInfo.USER_CONSOLE_CONTEXT,
+                SSL_TUNNEL_RESOURCE_TYPE,
+                new Permission[]{PolicyConstants.PERM_PERSONAL_CREATE_EDIT_AND_DELETE},
+                SSL_TUNNEL_RESOURCE_TYPE));
 
         tree.addMenuItem("globalResources", new MenuItem("tunnels",
-                        MESSAGE_RESOURCES_KEY,
-                        "/showTunnels.do",
-                        400,
-                        true,
-                        null,
-                        SessionInfo.MANAGEMENT_CONSOLE_CONTEXT, SSL_TUNNEL_RESOURCE_TYPE,
-                        new Permission[] { PolicyConstants.PERM_CREATE_EDIT_AND_ASSIGN,
-                            PolicyConstants.PERM_EDIT_AND_ASSIGN,
-                            PolicyConstants.PERM_DELETE,
-                            PolicyConstants.PERM_ASSIGN }) {
-            public boolean isAvailable(int checkNavigationContext, SessionInfo info, HttpServletRequest request) {
-                boolean available = super.isAvailable(checkNavigationContext, info, request);
-                if (available) {
-                    try {
-                        PolicyUtil.checkPermissions(SSL_TUNNEL_RESOURCE_TYPE, new Permission[] {
-                                        PolicyConstants.PERM_CREATE_EDIT_AND_ASSIGN, PolicyConstants.PERM_EDIT_AND_ASSIGN,
-                                        PolicyConstants.PERM_DELETE, PolicyConstants.PERM_ASSIGN }, request);
-                        available = true;
-                    } catch (Exception e1) {
-                        available = false;
+                MESSAGE_RESOURCES_KEY,
+                "/showTunnels.do",
+                400,
+                true,
+                null,
+                SessionInfo.MANAGEMENT_CONSOLE_CONTEXT, SSL_TUNNEL_RESOURCE_TYPE,
+                new Permission[]{PolicyConstants.PERM_CREATE_EDIT_AND_ASSIGN,
+                    PolicyConstants.PERM_EDIT_AND_ASSIGN,
+                    PolicyConstants.PERM_DELETE,
+                    PolicyConstants.PERM_ASSIGN}) {
+                    public boolean isAvailable(int checkNavigationContext, SessionInfo info, HttpServletRequest request) {
+                        boolean available = super.isAvailable(checkNavigationContext, info, request);
+                        if (available) {
+                            try {
+                                PolicyUtil.checkPermissions(SSL_TUNNEL_RESOURCE_TYPE, new Permission[]{
+                                    PolicyConstants.PERM_CREATE_EDIT_AND_ASSIGN, PolicyConstants.PERM_EDIT_AND_ASSIGN,
+                                    PolicyConstants.PERM_DELETE, PolicyConstants.PERM_ASSIGN}, request);
+                                available = true;
+                            } catch (Exception e1) {
+                                available = false;
+                            }
+                        }
+                        return available;
                     }
-                }
-                return available;
-            }
-        });
+                });
     }
 
     void initPageTasks() throws Exception {
@@ -179,32 +177,32 @@ public class TunnelPlugin extends DefaultPlugin {
         // Tunnels showTunnels
         tree.addMenuItem(null, new MenuItem("showTunnels", null, null, 100, false, SessionInfo.MANAGEMENT_CONSOLE_CONTEXT));
         tree.addMenuItem("showTunnels", new MenuItem("createTunnel",
-                        MESSAGE_RESOURCES_KEY,
-                        "/defaultTunnelDetails.do",
-                        100,
-                        true,
-                        "_self",
-                        SessionInfo.MANAGEMENT_CONSOLE_CONTEXT, SSL_TUNNEL_RESOURCE_TYPE,
-                        new Permission[] { PolicyConstants.PERM_CREATE_EDIT_AND_ASSIGN }));
-        
+                MESSAGE_RESOURCES_KEY,
+                "/defaultTunnelDetails.do",
+                100,
+                true,
+                "_self",
+                SessionInfo.MANAGEMENT_CONSOLE_CONTEXT, SSL_TUNNEL_RESOURCE_TYPE,
+                new Permission[]{PolicyConstants.PERM_CREATE_EDIT_AND_ASSIGN}));
+
         // Networking userNetworkPlaces
         tree.addMenuItem(null, new MenuItem("showUserTunnels", null, null, 100, false, SessionInfo.USER_CONSOLE_CONTEXT));
         tree.addMenuItem("showUserTunnels", new MenuItem("createPersonalTunnel",
-                        MESSAGE_RESOURCES_KEY,
-                        "/defaultTunnelDetails.do",
-                        100,
-                        true,
-                        "_self",
-                        SessionInfo.USER_CONSOLE_CONTEXT,
-                        SSL_TUNNEL_RESOURCE_TYPE,
-                        new Permission[] { PolicyConstants.PERM_PERSONAL_CREATE_EDIT_AND_DELETE }));
+                MESSAGE_RESOURCES_KEY,
+                "/defaultTunnelDetails.do",
+                100,
+                true,
+                "_self",
+                SessionInfo.USER_CONSOLE_CONTEXT,
+                SSL_TUNNEL_RESOURCE_TYPE,
+                new Permission[]{PolicyConstants.PERM_PERSONAL_CREATE_EDIT_AND_DELETE}));
 
     }
 
-    void initService() throws Exception{
+    void initService() throws Exception {
         DefaultAgentManager.getInstance().registerService(TunnelingService.class);
     }
-    
+
     public void stopPlugin() throws ExtensionException {
         super.stopPlugin();
         try {
